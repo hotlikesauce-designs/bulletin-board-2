@@ -4,6 +4,7 @@ task({ :sample_data => :environment }) do
   if Rails.env.development?
     Board.destroy_all
     Post.destroy_all
+    User.destroy_all
   end
 
   if Rails.env.production?
@@ -25,11 +26,12 @@ task({ :sample_data => :environment }) do
   5.times do
     board = Board.new
     board.name = Faker::Address.community
-    board.user_id = User.all.sample
+    board.user_id = User.all.sample.id
     board.save
 
     rand(10..50).times do
       post = Post.new
+      post.user_id = User.all.sample.id
       post.board_id = board.id
       post.title = rand < 0.5 ? Faker::Commerce.product_name : Faker::Job.title
       post.body = Faker::Lorem.paragraphs(number: rand(1..5), supplemental: true).join("\n\n")
